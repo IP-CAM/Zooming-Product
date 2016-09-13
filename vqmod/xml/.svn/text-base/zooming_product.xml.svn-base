@@ -1,0 +1,109 @@
+<!--
+/*
+ * @support
+ * http://www.opensourcetechnologies.com/contactus.html
+ * sales@opensourcetechnologies.com
+* */
+-->
+<modification>  
+   <id>Zooming Product</id>
+   <version>1.0.0</version>
+   <vqmver>2.5.1</vqmver>
+   <author>OST</author>
+   					
+	<file name="catalog/controller/product/product.php">
+	   <operation>
+		   <search position="after"><![CDATA[$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('config_image_thumb_width'), $this->config->get('config_image_thumb_height'));]]></search>
+		   <add>
+			   <![CDATA[
+					$data['standard']=$this->model_tool_image->resize($product_info['image'], $this->config->get('config_image_additional_width'), $this->config->get('config_image_additional_height'));
+			   ]]>
+		   </add>
+		</operation>
+		<operation>
+		   <search position="after" offset=''><![CDATA[$data['thumb'] = '';]]></search>
+		   <add>
+			   <![CDATA[
+					$data['standard']='';
+			   ]]>
+		   </add>
+		</operation>
+		<operation>
+		   <search position="after" offset=''><![CDATA['thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('config_image_additional_width'), $this->config->get('config_image_additional_height'))]]></search>
+		   <add>
+			   <![CDATA[,
+					'standard' => $this->model_tool_image->resize($result['image'], $this->config->get('config_image_thumb_width'), $this->config->get('config_image_thumb_width'))
+			   ]]>
+		   </add>
+		</operation>
+	</file>
+	<file name="catalog/view/theme/*/template/product/product.tpl">
+	   <operation>
+		   <search position="after"><![CDATA[<?php echo $header; ?>]]></search>
+		   <add>
+			   <![CDATA[
+					<script src="catalog/view/javascript/easyzoom.js" type="text/javascript"></script>
+					<link href="catalog/view/stylesheet/easyzoom.css" rel="stylesheet" media="screen" />
+			   ]]>
+		   </add>
+		</operation>
+		<operation>
+		   <search position="after"><![CDATA[<?php if ($thumb || $images) { ?>]]></search>
+		   <add>
+			   <![CDATA[
+			    <?php if ($thumb) { ?>
+					<div class="easyzoom easyzoom--overlay easyzoom--with-thumbnails" style='width:65%'><a class="thumbnail" href="<?php echo $popup; ?>" title="<?php echo $heading_title; ?>"><img src="<?php echo $thumb; ?>" title="<?php echo $heading_title; ?>" alt="<?php echo $heading_title; ?>" /></a></div>
+					<?php } ?>
+				  <ul class="thumbnails">
+					<?php if ($thumb) { ?>
+					<li class="image-additional"><a class="thumbnail" href="<?php echo $popup; ?>" title="<?php echo $heading_title; ?>" data-standard="<?php echo $thumb; ?>"><img src="<?php echo $standard; ?>" title="<?php echo $heading_title; ?>" alt="<?php echo $heading_title; ?>" /></a></li>
+					<?php } ?>
+					<?php if ($images) { ?>
+					<?php foreach ($images as $image) { ?>
+					<li class="image-additional"><a class="thumbnail" href="<?php echo $image['popup']; ?>" title="<?php echo $heading_title; ?>" data-standard="<?php echo $image['standard']; ?>"> <img src="<?php echo $image['thumb']; ?>" title="<?php echo $heading_title; ?>" alt="<?php echo $heading_title; ?>" /></a></li>
+					<?php } ?>
+					<?php } ?>
+				  </ul>
+					<!--
+			   ]]>
+		   </add>
+		</operation>
+		<operation>
+		   <search position="before" offset='2'><![CDATA[<ul class="nav nav-tabs">]]></search>
+		   <add>
+			   <![CDATA[
+					-->
+			   ]]>
+		   </add>
+		</operation>
+		<operation>
+		   <search position="before" offset=''><![CDATA[$(document).ready(function() {]]></search>
+		   <add>
+			   <![CDATA[
+					var $easyzoom = $('.easyzoom').easyZoom();
+// Setup thumbnails example
+		var api1 = $easyzoom.filter('.easyzoom--with-thumbnails').data('easyZoom');
+
+		$('.thumbnails').on('click', 'a', function(e) {
+			var $this = $(this);
+
+			e.preventDefault();
+
+			// Use EasyZoom's `swap` method
+			api1.swap($this.data('standard'), $this.attr('href'));
+		});
+		/*
+			   ]]>
+		   </add>
+		</operation>
+		<operation>
+		<search position="before" offset='1'><![CDATA[<?php echo $footer; ?>]]></search>
+		   <add>
+			   <![CDATA[
+		*/
+			   ]]>
+		   </add>
+		</operation>
+	</file>
+    
+</modification>
